@@ -75,3 +75,43 @@ body{
     }
 }
 ```
+
+Esto da como resultado el siguiente código CSS:
+
+```
+@media screen and (min-width: 34em) {
+    body {
+        background: red;
+    }
+}
+
+@media screen and (max-width: 33.9375em) {
+    body {
+        background: green;
+    }
+}
+
+@media screen and (min-width: 34em) and (max-width: 47.9375em) {
+    body {
+        background: blue;
+    }
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        background: grey;
+    }
+}
+
+@media screen and (orientation: portrait) {
+    body {
+        background: yellow;
+    }
+}
+
+@media screen and (orientation: landscape) {
+    body {
+        background: purple;
+    }
+}
+``

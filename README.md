@@ -14,7 +14,7 @@ Una vez descargado solo tienes que importarlo al principio de tu proyecto:
 @import "mediaqueries-sass-mixin";
 ```
 
-## Doc
+## Documentación
 
 **Breakpoints personalizados**
 
@@ -123,3 +123,7 @@ Esto da como resultado el siguiente código CSS:
     }
 }
 ```
+
+##License
+
+Licensed under the MIT License

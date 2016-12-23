@@ -10,7 +10,7 @@ bower install mediaqueries-sass-mixin
 
 Una vez descargado solo tienes que importarlo al principio de tu proyecto:
 
-```
+```scss
 @import "mediaqueries-sass-mixin";
 ```
 

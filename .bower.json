@@ -1,22 +1,21 @@
 {
-    "name": "mediaqueries sass mixin",
+    "name": "mediaqueries-sass-mixin",
     "version": "0.1.0",
     "_release": "0.1.0",
     "_target": "^0.1.0",
-    "directory" : "mediaqueries-sass-mixin",
     "homepage": "https://github.com/javipuche/mediaqueries-sass-mixin",
     "main": "_mediaqueries-sass-mixin.scss",
     "author": "Fco. Javier Puche Victoria",
     "description": "Mixin sencillo para usar Mediaqueries en Sass de manera fácil y personalizable, inspirado en el framework Foundation de ZURB.",
     "license" : "MIT",
     "keywords": [
-      "sass",
-      "css",
-      "mixin",
-      "mediaqueries",
-      "mediaquery",
-      "queries",
-      "query",
-      "media"
+        "sass",
+        "css",
+        "mixin",
+        "mediaqueries",
+        "mediaquery",
+        "queries",
+        "query",
+        "media"
     ]
 }

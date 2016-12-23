@@ -2,7 +2,7 @@
 
 **Mixin** sencillo para usar **Mediaqueries** en **Sass** de manera fácil y personalizable, inspirado en el framework Foundation de ZURB.
 
-## Cómo instarlo
+## Cómo instalarlo
 
 ```
 bower install mediaqueries-sass-mixin

@@ -8,6 +8,12 @@
 bower install mediaqueries-sass-mixin
 ```
 
+Una vez descargado solo tienes que importarlo al principio de tu proyecto:
+
+```
+@import "mediaqueries-sass-mixin";
+```
+
 ## Doc
 
 **Breakpoints personalizados**

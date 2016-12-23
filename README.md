@@ -20,7 +20,7 @@ Una vez descargado solo tienes que importarlo al principio de tu proyecto:
 
 Puedes cambiar los breakpoints que vienen por defecto y/o añadir nuevos de la siguiente manera:
 
-```
+```scss
 // Default breakpoints
 
 $breakpoints: (
@@ -42,7 +42,7 @@ $breakpoints: (
 
 Una vez configurados los breakpoints, puedes usarlos de la siguiente manera:
 
-```
+```scss
 body{
     // De móvil a escritorio
 
@@ -86,7 +86,7 @@ body{
 
 Esto da como resultado el siguiente código CSS:
 
-```
+```css
 @media screen and (min-width: 34em) {
     body {
         background: red;

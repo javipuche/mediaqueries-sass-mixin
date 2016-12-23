@@ -76,6 +76,8 @@ body{
 }
 ```
 
+**Resultado**
+
 Esto da como resultado el siguiente código CSS:
 
 ```
@@ -114,4 +116,4 @@ Esto da como resultado el siguiente código CSS:
         background: purple;
     }
 }
-``
+```

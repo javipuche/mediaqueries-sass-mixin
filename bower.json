@@ -1,0 +1,9 @@
+{
+    "name": "mediaqueries-sass-mixin",
+    "version": "1.0.1",
+    "main": "_breakpoint.scss",
+    "ignore": [
+        ".gitignore",
+        "bower.json"
+    ]
+}

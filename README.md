@@ -1,6 +1,6 @@
 # Mediaqueries Sass Mixin
 
-**Mixin** sencillo para usar **Mediaqueries** en **Sass** de manera fácil y personalizable, inspirado en el framework Foundation de ZURB.
+**Mixin** sencillo para usar **Mediaqueries** en **Sass** de manera fácil y personalizable.
 
 ## Cómo instalarlo
 
@@ -16,7 +16,7 @@ Una vez descargado solo tienes que importarlo al principio de tu proyecto:
 
 ## Documentación
 
-**Breakpoints personalizados**
+**Breakpoints**
 
 Puedes cambiar los breakpoints que vienen por defecto y/o añadir nuevos de la siguiente manera:
 
@@ -34,7 +34,7 @@ $breakpoints: (
 // Custom breakpoints
 
 $breakpoints: (
-    example: pixels
+    example: pixels or ems
 ) !default;
 ```
 
@@ -82,45 +82,90 @@ body{
 }
 ```
 
-**Resultado**
-
 Esto da como resultado el siguiente código CSS:
 
 ```css
-@media screen and (min-width: 34em) {
+@media all and (min-width: 34em) {
     body {
         background: red;
     }
 }
-
-@media screen and (max-width: 33.9375em) {
+@media all and (max-width: 33.9375em) {
     body {
         background: green;
     }
 }
-
-@media screen and (min-width: 34em) and (max-width: 47.9375em) {
+@media all and (min-width: 34em) and (max-width: 47.9375em) {
     body {
         background: blue;
     }
 }
-
-@media screen and (-webkit-min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media all and (-webkit-min-device-pixel-ratio: 2), all and (min-resolution: 192dpi) {
     body {
         background: grey;
     }
 }
-
-@media screen and (orientation: portrait) {
+@media all and (orientation: portrait) {
     body {
         background: yellow;
     }
 }
-
-@media screen and (orientation: landscape) {
+@media all and (orientation: landscape) {
     body {
         background: purple;
     }
+}
+```
+
+**Valores personalizados**
+
+También acepta valores personalizados en pixeles o ems.
+
+```scss
+body{
+    // En pixels 544px/544 (con o sin 'px').
+    // En ems 34em (con 'em').
+
+    // De móvil a escritorio.
+
+    @include breakpoint(544px) {
+        background: red;
+    }
+
+    // De escritorio a móvil.
+
+    @include breakpoint(544px down) {
+        background: green;
+    }
+
+    // De el tamaño elegido al siguiente breakpoint definido (si existe).
+
+    @include breakpoint(544px only) {
+        background: blue;
+    }
+
+    // Rango personalizado
+
+    @include breakpoint(654px 935px) {
+        background: grey;
+    }
+}
+```
+
+Esto da como resultado el siguiente código CSS:
+
+```css
+@media all and (min-width: 34em) {
+  background: red;
+}
+@media all and (max-width: 33.9375em) {
+  background: green;
+}
+@media all and (min-width: 34em) and (max-width: 47.9375em) {
+  background: blue;
+}
+@media all and (min-width: 40.875em) and (max-width: 58.375em) {
+  background: grey;
 }
 ```
 

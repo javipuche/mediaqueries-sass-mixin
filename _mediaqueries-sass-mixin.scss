@@ -6,107 +6,142 @@
 
 // Breakpoints por defecto
 $breakpoints: (
-    small: 544px,
-    medium: 768px,
-    large: 1024px,
-    xlarge: 1200px,
-    xxlarge: 1440px,
+small: 544px,
+medium: 768px,
+large: 1024px,
+xlarge: 1200px,
+xxlarge: 1440px,
 ) !default;
 
+// Map Next Value [Function]
+// -------------------------
+// Selecciona el siguiente valor de una key en un map del elemento que le pasamos.
+@function map-next-value($map, $input){
+    $values: map-values($map);
+
+    @each $value in $values {
+        @if px-to-em($value) > px-to-em($input) {
+            @return $value;
+        }
+    }
+
+    @error 'No hay una mediaquery más grande que la elegida.';
+}
+
+// Map Next [Function]
+// -------------------
 // Selecciona el siguiente valor del elemento seleccionado en un map.
-// Esta función es original del equipo de ZURB
-// foundation.zurb.com
+// Esta función es del equipo de Foundation
 @function map-next($map, $key) {
     $values: map-keys($map);
     $i: 0;
+
     @if (map-has-key($map, $key)) {
         $i: index($values, $key) + 1;
     }
+
     @if ($i > length($map) or $i == 0) {
         @return null;
     }
+
     @else {
         @return map-get($map, nth($values, $i));
     }
 }
 
+// Px to Em [Function]
+// --------------------------
 // Convierte pixeles en ems
-@function simple-px-to-em($value, $baseline: 16px){
-    @return $value / $baseline * 1em;
+@function px-to-em($value, $baseline: 16px){
+    @if unit($value) == 'em' {
+        @return $value;
+    }
+
+    @else{
+        @return $value / $baseline * 1em;
+    }
 }
 
+// Breakpoint Type [Function]
+// --------------------------
+// Comprueba si es una key map o un número
+@function breakpoint-type($value) {
+    @if map-has-key($breakpoints, $value) {
+        @return map-get($breakpoints, $value);
+    }
+
+    @else if unit($value) == 'em' {
+        @return $value;
+    }
+
+    @else if unit($value) == 'px' or type-of($value) == number {
+        @return $value + 0px;
+    }
+
+    @else {
+        @error "Has escrito algo mal.";
+    }
+}
+
+// Breakpoint [Function]
+// ---------------------
 // Comprueba el breakpoint seleccionado
+//
+// $breakpoint - Contiene el breakpoint/valor que le pasamos, ej. small, medium, 768px etc.
+// $direction - Continene la direction de la mediaquery, ej. up, down, only
+// $next-breakpoint - Contiene el siguiente breakpoint al elegido en $breakpoint, sino existe devuelve null
+// $max-breakpoint - Contiene el breakpoint/valor de la segunda variable que le pasamos, ej. small, medium, 768px etc.
 @function breakpoint($value) {
-    // Comprobamos si es retina o la orientación del dispositivo
+
     @if $value == 'retina' {
-        // Devolvemos si es retina
-        @return '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)';
-    } @else if $value == 'landscape' or $value == 'portrait' {
-        // Devolvemos la orientación
+        @return '(min-resolution: 192dpi)';
+    }
+
+    @else if $value == 'landscape' or $value == 'portrait' {
         @return '(orientation: #{$value})';
     }
 
-    // Guardamos el breakpoint que le pasamos, ej. small, medium, etc.
-    $breakpoint: nth($value, 1);
-
-    // Comprobamos  si a parte del breakpoint tiene una dirección, sino la tiene
-    // le decimos que por defecto es up
+    $breakpoint: breakpoint-type(nth($value, 1));
     $direction: if(length($value) > 1, nth($value, 2), 'up');
+    $next-breakpoint: map-next($breakpoints, nth($value, 1));
 
-    // Guardamos el siguiente breakpoint al elegido, sino hay devuelve null
-    // Ej. Si has elegido small, guarda medium
-    $next-breakpoint: map-next($breakpoints, $breakpoint);
+    @if $direction == 'up' {
+        @return '(min-width: #{px-to-em($breakpoint)})';
+    }
 
-    // Comprobamos si el breakpoint elegido tiene un valor asociado. Ej. small,
-    // medium, etc.
-    @if map-has-key($breakpoints, $breakpoint) {
-        // Guardarmos el valor del breakpoint. Ej. 544px
-        $breakpoint: map-get($breakpoints, $breakpoint);
+    @else if $direction == 'down' {
+        @return '(max-width: #{px-to-em($breakpoint) - px-to-em(1px)})';
+    }
 
-        // Convertimos los pixeles a ems
-        $breakpoint: simple-px-to-em($breakpoint);
+    @else if $direction == 'only' {
+        @if type-of(nth($value, 1)) == number {
+            $next-breakpoint: map-next-value($breakpoints, nth($value, 1));
+        }
+        @return '(min-width: #{px-to-em($breakpoint)}) and (max-width: #{px-to-em($next-breakpoint) - px-to-em(1px)})';
+    }
 
-        // Comprobamos la dirección.
-        @if $direction == 'up' {
-            // Devolvemos el breakpoint
-            @return '(min-width: #{$breakpoint})';
-        } @else if $direction == 'down' {
-            // Restamos un pixel al breakpoint para que no se solape con el
-            // siguiente min-with breakpoint y convertimos los pixeles a ems
-            $breakpoint: $breakpoint - simple-px-to-em(1px);
-            // Devolvemos el breakpoint
-            @return '(max-width: #{$breakpoint})';
-        } @else if $direction == 'only' {
-            // Comprobamos si el siguiente breakpoint al elegido es null
-            @if $next-breakpoint == null {
-                // Si es null devolvemos un min-width
-                @return '(min-width: #{$breakpoint})';
-            } @else {
-                // Restamos un pixel al siguiente breakpoint para que no se
-                // solape con el siguiente min-with breakpoint y convertimos
-                // los pixeles a ems
-                $next-breakpoint: simple-px-to-em($next-breakpoint) - simple-px-to-em(1px);
+    @else {
+        $max-breakpoint: px-to-em(breakpoint-type(nth($value, 2)));
+        $breakpoint: px-to-em($breakpoint);
 
-                // Devolvemos los breakpoints
-                @return '(min-width: #{$breakpoint}) and (max-width: #{$next-breakpoint})';
-            }
-        } @else {
-            // Si el breakpoint elegido no tiene un valor sociado mostramos un
-            // mensaje de error
-            @warn "Has escrito algo mal.";
+        @if $max-breakpoint != $breakpoint and $max-breakpoint > $breakpoint {
+            @return '(min-width: #{px-to-em($breakpoint)}) and (max-width: #{px-to-em($max-breakpoint) - px-to-em(1px)})';
+        }
+
+        @else {
+            @error "El breakpoint no puede ser el mismo ni más pequeño. Ejemplo correcto: (small medium) o (544px 768px)";
         }
     }
-    @else {
-        // Si el breakpoint elegido no existe mostramos un mensaje de error
-        @warn "El breakpoint `#{$breakpoint}` no existe."
-        + "Crea uno nuevo o elige uno de estos: #{map-keys($breakpoints)}.";
-    }
+
+    @error "El breakpoint `#{$breakpoint}` no existe. Crea uno nuevo, elige uno de estos: #{map-keys($breakpoints)} o escribe un valor en pixeles.";
 }
 
+// Breakpoint [Mixin]
+// ------------------
 // Devuelve la mediaquery
 @mixin breakpoint($value) {
     $result: breakpoint($value);
-    @media screen and #{$result} {
+    @media all and #{$result} {
         @content;
     }
 }

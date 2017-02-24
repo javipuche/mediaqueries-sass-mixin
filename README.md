@@ -5,7 +5,7 @@
 ## Cómo instalarlo
 
 ```
-bower install mediaqueries-sass-mixin
+bower instscreen mediaqueries-sass-mixin
 ```
 
 Una vez descargado solo tienes que importarlo al principio de tu proyecto:
@@ -16,11 +16,18 @@ Una vez descargado solo tienes que importarlo al principio de tu proyecto:
 
 ## Documentación
 
-**Breakpoints**
+**Configuración por defecto**
 
-Puedes cambiar los breakpoints que vienen por defecto y/o añadir nuevos de la siguiente manera:
+Puedes cambiar la configuración por defecto de la siguiente manera:
 
 ```scss
+
+// Font size base para convertir los pixeles en ems
+$mq-font-size: 16px !default;
+
+// Media type por defecto
+$mq-media-type: 'screen' !default;
+
 // Default breakpoints
 
 $breakpoints: (
@@ -29,12 +36,6 @@ $breakpoints: (
     large: 1024px,
     xlarge: 1200px,
     xxlarge: 1440px,
-) !default;
-
-// Custom breakpoints
-
-$breakpoints: (
-    example: pixels or ems
 ) !default;
 ```
 
@@ -62,7 +63,7 @@ body{
         background: blue;
     }
 
-    // Para pantallas retina
+    // Para pantscreenas retina
 
     @include breakpoint(retina) {
         background: grey;
@@ -85,32 +86,32 @@ body{
 Esto da como resultado el siguiente código CSS:
 
 ```css
-@media all and (min-width: 34em) {
+@media screen and (min-width: 34em) {
     body {
         background: red;
     }
 }
-@media all and (max-width: 33.9375em) {
+@media screen and (max-width: 33.9375em) {
     body {
         background: green;
     }
 }
-@media all and (min-width: 34em) and (max-width: 47.9375em) {
+@media screen and (min-width: 34em) and (max-width: 47.9375em) {
     body {
         background: blue;
     }
 }
-@media all and (-webkit-min-device-pixel-ratio: 2), all and (min-resolution: 192dpi) {
+@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi) {
     body {
         background: grey;
     }
 }
-@media all and (orientation: portrait) {
+@media screen and (orientation: portrait) {
     body {
         background: yellow;
     }
 }
-@media all and (orientation: landscape) {
+@media screen and (orientation: landscape) {
     body {
         background: purple;
     }
@@ -155,16 +156,16 @@ body{
 Esto da como resultado el siguiente código CSS:
 
 ```css
-@media all and (min-width: 34em) {
+@media screen and (min-width: 34em) {
   background: red;
 }
-@media all and (max-width: 33.9375em) {
+@media screen and (max-width: 33.9375em) {
   background: green;
 }
-@media all and (min-width: 34em) and (max-width: 47.9375em) {
+@media screen and (min-width: 34em) and (max-width: 47.9375em) {
   background: blue;
 }
-@media all and (min-width: 40.875em) and (max-width: 58.375em) {
+@media screen and (min-width: 40.875em) and (max-width: 58.375em) {
   background: grey;
 }
 ```

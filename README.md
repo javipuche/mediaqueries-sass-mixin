@@ -5,7 +5,7 @@
 ## Cómo instalarlo
 
 ```
-bower instscreen mediaqueries-sass-mixin
+bower install mediaqueries-sass-mixin
 ```
 
 Una vez descargado solo tienes que importarlo al principio de tu proyecto:

@@ -1,19 +1,19 @@
 /**
  * Mediaqueries Sass Mixin
  * Author Javier Puche Victoria
- * Version 1.2.0
+ * Version 1.2.1
  * https://github.com/javipuche/mediaqueries-sass-mixin
  * Licensed under MIT Open Source
  */
 
 /**
- * Configuración por defecto
+ * Default config
  */
 
 $mq-font-size: 16px !default;
 $mq-media-type: 'screen' !default;
 
-$breakpoints: (
+$mq-breakpoints: (
 small: 544px,
 medium: 768px,
 large: 1024px,
@@ -23,7 +23,6 @@ xxlarge: 1440px,
 
 /**
  * Px to Em [Function]
- * Convierte pixeles o números en ems
  */
 
 @function px-to-em($value, $baseline: $mq-font-size){
@@ -41,7 +40,7 @@ xxlarge: 1440px,
 
 /**
  * Map Next Value [Function]
- * Selecciona el siguiente valor de una key en un map del elemento que le pasamos.
+ * Get Next value from sass map
  */
 
 @function map-next-value($map, $input){
@@ -58,7 +57,7 @@ xxlarge: 1440px,
 
 /**
  * Breakpoint Type [Function]
- * Comprueba si es una key map (y existe), un número o una dirección
+ * Check if a value is a key map, number or direction
  */
 
 @function breakpoint-type($value) {
@@ -66,8 +65,8 @@ xxlarge: 1440px,
         @return px-to-em($value);
     }
 
-    @else if map-has-key($breakpoints, $value) {
-        @return px-to-em(map-get($breakpoints, $value));
+    @else if map-has-key($mq-breakpoints, $value) {
+        @return px-to-em(map-get($mq-breakpoints, $value));
     }
 
     @else if $value == 'up' or $value == 'down' or $value == 'only'{
@@ -75,13 +74,13 @@ xxlarge: 1440px,
     }
 
     @else {
-        @error "El breakpoint `#{$value}` no existe. Crea uno nuevo, elige uno de estos: #{map-keys($breakpoints)} o escribe un valor en pixeles.";
+        @error "El breakpoint `#{$value}` no existe. Crea uno nuevo, elige uno de estos: #{map-keys($mq-breakpoints)} o escribe un valor en pixeles.";
     }
 }
 
 /**
  * Breakpoint [Function]
- * Comprueba el breakpoint seleccionado
+ * Check selected Breakpoint
  */
 
 @function breakpoint($value) {
@@ -94,7 +93,7 @@ xxlarge: 1440px,
     }
 
     $breakpoint: breakpoint-type(nth($value, 1));
-    $breakpoint-next: px-to-em(map-next-value($breakpoints, $breakpoint));
+    $breakpoint-next: px-to-em(map-next-value($mq-breakpoints, $breakpoint));
     $breakpoint-direction: if(length($value) > 1, breakpoint-type(nth($value, 2)), 'up');
     $result: '';
 
@@ -123,7 +122,7 @@ xxlarge: 1440px,
 
 /**
  * Breakpoint [Mixin]
- * Devuelve la mediaquery
+ * Return media query
  */
 
 @mixin breakpoint($value, $media-type: $mq-media-type) {

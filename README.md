@@ -4,6 +4,14 @@ A **Sass Mixin** that helps you to create **media queries**.
 
 ## How to install
 
+### NPM
+
+```
+npm install mediaqueries-sass-mixin --save-dev
+```
+
+### Bower
+
 ```
 bower install mediaqueries-sass-mixin
 ```

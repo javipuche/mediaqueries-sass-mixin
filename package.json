@@ -1,0 +1,27 @@
+{
+  "name": "mediaqueries-sass-mixin",
+  "version": "1.2.1",
+  "description": "A Sass Mixin that helps you to create media queries.",
+  "main": "mediaqueries-sass-mixin.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javipuche/mediaqueries-sass-mixin.git"
+  },
+  "keywords": [
+    "sass",
+    "mixin",
+    "media",
+    "queries",
+    "mediaqueries",
+    "scss"
+  ],
+  "author": "Javier Puche",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/javipuche/mediaqueries-sass-mixin/issues"
+  },
+  "homepage": "https://github.com/javipuche/mediaqueries-sass-mixin#readme"
+}

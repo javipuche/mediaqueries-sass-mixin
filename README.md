@@ -7,13 +7,13 @@ A **Sass Mixin** that helps you to create **media queries**.
 ### NPM
 
 ```
-npm install mediaqueries-sass-mixin --save-dev
+npm install mediaqueries-sass-mixin --save
 ```
 
 ### Bower
 
 ```
-bower install mediaqueries-sass-mixin
+bower install mediaqueries-sass-mixin --save
 ```
 
 ## How to use

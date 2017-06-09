@@ -88,7 +88,7 @@ body {
 
 /**
  * Desktop First
- * @include breakpoint(small)
+ * @include breakpoint(small down)
  */
 @media screen and (max-width: 33.9375em) {
     body {

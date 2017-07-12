@@ -44,6 +44,11 @@ xxlarge: 1440px,
  */
 
 @function map-next-value($map, $input){
+
+    @if number($input) or unit($input) == 'px' {
+        @return $input;
+    }
+
     $values: map-values($map);
 
     @each $value in $values {

@@ -1,138 +1,142 @@
 /**
- * Mediaqueries Sass Mixin
- * Author Javier Puche Victoria
- * Version 1.2.1
- * https://github.com/javipuche/mediaqueries-sass-mixin
- * Licensed under MIT Open Source
- */
+* Mediaqueries Sass Mixin
+* Author Javier Puche Victoria
+* Version 1.2.3
+* https://github.com/javipuche/mediaqueries-sass-mixin
+* Licensed under MIT Open Source
+*/
 
 /**
- * Default config
- */
+* Default config
+*/
 
 $mq-font-size: 16px !default;
 $mq-media-type: 'screen' !default;
 
 $mq-breakpoints: (
-small: 544px,
-medium: 768px,
-large: 1024px,
-xlarge: 1200px,
-xxlarge: 1440px,
+  small: 544px,
+  medium: 768px,
+  large: 1024px,
+  xlarge: 1200px,
+  xxlarge: 1440px,
 ) !default;
 
 /**
- * Px to Em [Function]
- */
+* Px to Em [Function]
+*/
 
 @function px-to-em($value, $baseline: $mq-font-size){
-    @if unit($value) == 'em' {
-        @return $value;
-    }
+  @if unit($value) == 'em' {
+    @return $value;
+  }
 
-    @else {
-        @if unitless($value){
-            $value: $value + 0px;
-        }
-        @return $value / $baseline * 1em;
+  @else {
+    @if unitless($value){
+      $value: $value + 0px;
     }
+    @return $value / $baseline * 1em;
+  }
+
+  @if number($input) or unit($input) == 'px' {
+    @return $input;
+  }
 }
 
 /**
- * Map Next Value [Function]
- * Get Next value from sass map
- */
+* Map Next Value [Function]
+* Get Next value from sass map
+*/
 
 @function map-next-value($map, $input){
 
-    @if number($input) or unit($input) == 'px' {
-        @return $input;
+  $values: map-values($map);
+
+  @each $value in $values {
+    @if px-to-em($value) > px-to-em($input) {
+      @return $value;
     }
+  }
 
-    $values: map-values($map);
+  @if number($input) or unit($input) == 'px' {
+    @return $input;
+  }
 
-    @each $value in $values {
-        @if px-to-em($value) >= px-to-em($input) {
-            @return $value;
-        }
-    }
-
-    @error 'No hay una mediaquery más grande que la elegida.';
+  @error 'No hay una mediaquery más grande que la elegida.';
 }
 
 /**
- * Breakpoint Type [Function]
- * Check if a value is a key map, number or direction
- */
+* Breakpoint Type [Function]
+* Check if a value is a key map, number or direction
+*/
 
 @function breakpoint-type($value) {
-    @if type-of($value) == number {
-        @return px-to-em($value);
-    }
+  @if type-of($value) == number {
+    @return px-to-em($value);
+  }
 
-    @else if map-has-key($mq-breakpoints, $value) {
-        @return px-to-em(map-get($mq-breakpoints, $value));
-    }
+  @else if map-has-key($mq-breakpoints, $value) {
+    @return px-to-em(map-get($mq-breakpoints, $value));
+  }
 
-    @else if $value == 'up' or $value == 'down' or $value == 'only'{
-        @return $value;
-    }
+  @else if $value == 'up' or $value == 'down' or $value == 'only'{
+    @return $value;
+  }
 
-    @else {
-        @error "El breakpoint `#{$value}` no existe. Crea uno nuevo, elige uno de estos: #{map-keys($mq-breakpoints)} o escribe un valor en pixeles.";
-    }
+  @else {
+    @error "El breakpoint `#{$value}` no existe. Crea uno nuevo, elige uno de estos: #{map-keys($mq-breakpoints)} o escribe un valor en pixeles.";
+  }
 }
 
 /**
- * Breakpoint [Function]
- * Check selected Breakpoint
- */
+* Breakpoint [Function]
+* Check selected Breakpoint
+*/
 
 @function breakpoint($value) {
-    @if $value == 'retina' {
-        @return '(-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi)';
-    }
+  @if $value == 'retina' {
+    @return '(-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi)';
+  }
 
-    @else if $value == 'landscape' or $value == 'portrait' {
-        @return '(orientation: #{$value})';
-    }
+  @else if $value == 'landscape' or $value == 'portrait' {
+    @return '(orientation: #{$value})';
+  }
 
-    $breakpoint: breakpoint-type(nth($value, 1));
-    $breakpoint-next: px-to-em(map-next-value($mq-breakpoints, $breakpoint));
-    $breakpoint-direction: if(length($value) > 1, breakpoint-type(nth($value, 2)), 'up');
-    $result: '';
+  $breakpoint: breakpoint-type(nth($value, 1));
+  $breakpoint-next: px-to-em(map-next-value($mq-breakpoints, $breakpoint));
+  $breakpoint-direction: if(length($value) > 1, breakpoint-type(nth($value, 2)), 'up');
+  $result: '';
 
-    @if $breakpoint-direction == 'up' {
-        $result: $result + '(min-width: #{$breakpoint})';
-    }
+  @if $breakpoint-direction == 'up' {
+    $result: $result + '(min-width: #{$breakpoint})';
+  }
 
-    @else if $breakpoint-direction == 'down' {
-        $result: $result + '(max-width: #{$breakpoint - px-to-em(1px)})';
-    }
+  @else if $breakpoint-direction == 'down' {
+    $result: $result + '(max-width: #{$breakpoint - px-to-em(1px)})';
+  }
 
-    @else if $breakpoint-direction == 'only' {
-        $result: $result + '(min-width: #{$breakpoint}) and (max-width: #{$breakpoint-next - px-to-em(1px)})';
-    }
+  @else if $breakpoint-direction == 'only' {
+    $result: $result + '(min-width: #{$breakpoint}) and (max-width: #{$breakpoint-next - px-to-em(1px)})';
+  }
 
-    @else if type-of($breakpoint-direction) == number and $breakpoint < $breakpoint-direction  {
-        $result: $result + '(min-width: #{$breakpoint}) and (max-width: #{$breakpoint-direction - px-to-em(1px)})';
-    }
+  @else if type-of($breakpoint-direction) == number and $breakpoint < $breakpoint-direction  {
+    $result: $result + '(min-width: #{$breakpoint}) and (max-width: #{$breakpoint-direction - px-to-em(1px)})';
+  }
 
-    @else {
-        @error "El breakpoint no puede ser el mismo ni más pequeño. Ejemplo correcto: (small medium) o (544px 768px)";
-    }
+  @else {
+    @error "El breakpoint no puede ser el mismo ni más pequeño. Ejemplo correcto: (small medium) o (544px 768px)";
+  }
 
-    @return $result;
+  @return $result;
 }
 
 /**
- * Breakpoint [Mixin]
- * Return media query
- */
+* Breakpoint [Mixin]
+* Return media query
+*/
 
 @mixin breakpoint($value, $media-type: $mq-media-type) {
-    $result: breakpoint($value);
-    @media #{$media-type} and #{$result} {
-        @content;
-    }
+  $result: breakpoint($value);
+  @media #{$media-type} and #{$result} {
+    @content;
+  }
 }

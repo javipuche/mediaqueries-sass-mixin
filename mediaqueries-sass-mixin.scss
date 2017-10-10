@@ -1,14 +1,15 @@
-/**
-* Mediaqueries Sass Mixin
-* Author Javier Puche Victoria
-* Version 1.2.3
-* https://github.com/javipuche/mediaqueries-sass-mixin
-* Licensed under MIT Open Source
-*/
+/* -----------------------------------------------------------------------------
+ * MEDIAQUERIES SASS MIXIN
+ *
+ * Author Javier Puche Victoria
+ * Version 1.2.4
+ * https://github.com/javipuche/mediaqueries-sass-mixin
+ * Licensed under MIT Open Source
+ */
 
-/**
-* Default config
-*/
+
+// Default config
+// -----------------------------------------------------------------------------
 
 $mq-font-size: 16px !default;
 $mq-media-type: 'screen' !default;
@@ -21,122 +22,133 @@ $mq-breakpoints: (
   xxlarge: 1440px,
 ) !default;
 
-/**
-* Px to Em [Function]
-*/
 
-@function px-to-em($value, $baseline: $mq-font-size){
-  @if unit($value) == 'em' {
-    @return $value;
+// Functions
+// -----------------------------------------------------------------------------
+
+// List remove
+
+@function list-remove($_list, $_index) {
+  $_newList: ();
+  @for $_i from 1 through length($_list) {
+     @if $_i != $_index{
+      $_newList: append($_newList, nth($_list, $_i), 'space');
+    }
+  }
+  @return $_newList;
+}
+
+// List sort
+
+@function list-sort($_list) {
+  $_sortedlist: ();
+  @while length($_list) > 0 {
+    $_value: nth($_list,1);
+    @each $_item in $_list {
+       @if $_item < $_value{
+        $_value: $_item;
+      }
+    }
+    $_sortedlist: append($_sortedlist, $_value, 'space');
+    $_list: list-remove($_list, index($_list, $_value));
+  }
+  @return $_sortedlist;
+}
+
+// Px to Em
+
+@function px-to-em($_value, $_baseline: $mq-font-size) {
+  @if unit($_value) == 'em' {
+    @return $_value;
+  }
+  @else {
+     @if unitless($_value){
+      $_value: $_value + 0px;
+    }
+    @return $_value / $_baseline * 1em;
+  }
+}
+
+// Get Next value from sass map
+
+@function map-next-value($_map, $_input) {
+  $_values: list-sort(map-values($_map));
+
+  @each $_value in $_values {
+     @if px-to-em($_value) > px-to-em($_input){
+      @return $_value;
+    }
+  }
+
+  @error 'Next value is not defined.';
+}
+
+// Check if a value is a key map, number or direction
+
+@function breakpoint-type($_value) {
+  @if type-of($_value) == number{
+    @return px-to-em($_value);
+  }
+
+  @else if map-has-key($mq-breakpoints, $_value) {
+     @return px-to-em(map-get($mq-breakpoints, $_value));
+  }
+
+  @else if $_value == 'up' or $_value == 'down' or $_value == 'only' {
+    @return $_value;
   }
 
   @else {
-    @if unitless($value){
-      $value: $value + 0px;
-    }
-    @return $value / $baseline * 1em;
-  }
-
-  @if number($input) or unit($input) == 'px' {
-    @return $input;
+     @error "Breakpoint `#{$_value}` doesn't exists. Create a new one, choose one of these: #{map-keys($mq-breakpoints)} or write a value in pixels.";
   }
 }
 
-/**
-* Map Next Value [Function]
-* Get Next value from sass map
-*/
+// Set breakpoint
 
-@function map-next-value($map, $input){
-
-  $values: map-values($map);
-
-  @each $value in $values {
-    @if px-to-em($value) > px-to-em($input) {
-      @return $value;
-    }
-  }
-
-  @if number($input) or unit($input) == 'px' {
-    @return $input;
-  }
-
-  @error 'No hay una mediaquery más grande que la elegida.';
-}
-
-/**
-* Breakpoint Type [Function]
-* Check if a value is a key map, number or direction
-*/
-
-@function breakpoint-type($value) {
-  @if type-of($value) == number {
-    @return px-to-em($value);
-  }
-
-  @else if map-has-key($mq-breakpoints, $value) {
-    @return px-to-em(map-get($mq-breakpoints, $value));
-  }
-
-  @else if $value == 'up' or $value == 'down' or $value == 'only'{
-    @return $value;
-  }
-
-  @else {
-    @error "El breakpoint `#{$value}` no existe. Crea uno nuevo, elige uno de estos: #{map-keys($mq-breakpoints)} o escribe un valor en pixeles.";
-  }
-}
-
-/**
-* Breakpoint [Function]
-* Check selected Breakpoint
-*/
-
-@function breakpoint($value) {
-  @if $value == 'retina' {
+@function breakpoint($_value) {
+  @if $_value == 'retina' {
     @return '(-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi)';
   }
 
-  @else if $value == 'landscape' or $value == 'portrait' {
-    @return '(orientation: #{$value})';
+  @else if $_value == 'landscape' or $_value == 'portrait' {
+    @return '(orientation: #{$_value})';
   }
 
-  $breakpoint: breakpoint-type(nth($value, 1));
-  $breakpoint-next: px-to-em(map-next-value($mq-breakpoints, $breakpoint));
-  $breakpoint-direction: if(length($value) > 1, breakpoint-type(nth($value, 2)), 'up');
-  $result: '';
+  $_breakpoint: breakpoint-type(nth($_value, 1));
+  $_breakpoint-direction: if(length($_value) > 1, breakpoint-type(nth($_value, 2)), 'up');
+  $_result: '';
 
-  @if $breakpoint-direction == 'up' {
-    $result: $result + '(min-width: #{$breakpoint})';
+  @if $_breakpoint-direction == 'up' {
+    $_result: $_result + '(min-width: #{$_breakpoint})';
   }
 
-  @else if $breakpoint-direction == 'down' {
-    $result: $result + '(max-width: #{$breakpoint - px-to-em(1px)})';
+  @else if $_breakpoint-direction == 'down' {
+    $_result: $_result + '(max-width: #{$_breakpoint - px-to-em(1px)})';
   }
 
-  @else if $breakpoint-direction == 'only' {
-    $result: $result + '(min-width: #{$breakpoint}) and (max-width: #{$breakpoint-next - px-to-em(1px)})';
+  @else if $_breakpoint-direction == 'only' {
+    $_breakpoint-next: px-to-em(map-next-value($mq-breakpoints, $_breakpoint));
+    $_result: $_result + '(min-width: #{$_breakpoint}) and (max-width: #{$_breakpoint-next - px-to-em(1px)})';
   }
 
-  @else if type-of($breakpoint-direction) == number and $breakpoint < $breakpoint-direction  {
-    $result: $result + '(min-width: #{$breakpoint}) and (max-width: #{$breakpoint-direction - px-to-em(1px)})';
+  @else if type-of($_breakpoint-direction) == number and $_breakpoint < $_breakpoint-direction {
+    $_result: $_result + '(min-width: #{$_breakpoint}) and (max-width: #{$_breakpoint-direction - px-to-em(1px)})';
   }
 
   @else {
-    @error "El breakpoint no puede ser el mismo ni más pequeño. Ejemplo correcto: (small medium) o (544px 768px)";
+     @error "Breakpoint can't be the same or smaller. Correct example: (small medium) or (544px 768px)";
   }
 
-  @return $result;
+  @return $_result;
 }
 
-/**
-* Breakpoint [Mixin]
-* Return media query
-*/
 
-@mixin breakpoint($value, $media-type: $mq-media-type) {
-  $result: breakpoint($value);
-  @media #{$media-type} and #{$result} {
-    @content;
+// Mixin
+// -----------------------------------------------------------------------------
+
+@mixin breakpoint($_value, $_media-type: $mq-media-type) {
+  $_result: breakpoint($_value);
+  @media #{$_media-type} and #{$_result} {
+     @content;
   }
 }
